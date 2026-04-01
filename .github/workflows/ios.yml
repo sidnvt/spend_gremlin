@@ -9,6 +9,8 @@ on:
 jobs:
   build_ios:
     runs-on: macos-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
     steps:
       - name: Checkout Code
@@ -17,11 +19,14 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.x' # Or the version matching your local install
+          flutter-version: '3.41.x'
           channel: 'stable'
 
       - name: Install Dependencies
         run: flutter pub get
+
+      - name: Generate Code Models
+        run: dart run build_runner build --delete-conflicting-outputs
 
       - name: Build iOS Application (No Sign)
         # Note: True App Store or device deployment requires Apple Developer certificates.
