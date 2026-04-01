@@ -1,0 +1,505 @@
+
+<style>
+:root {
+  --bg:#0e1117;--surf:#181c26;--card:#1e2330;--green:#22c55e;--greenl:#4ade80;
+  --amber:#f59e0b;--red:#ef4444;--redl:#fca5a5;--text:#f1f5f9;--muted:#94a3b8;
+  --border:#2a3040;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:transparent}
+.wrap{display:flex;gap:20px;align-items:flex-start;padding:1rem 0;flex-wrap:wrap}
+.sidebar{display:flex;flex-direction:column;gap:6px;min-width:100px}
+.sb-label{font-size:10px;color:var(--muted);font-family:monospace;margin-bottom:2px}
+.sb-btn{padding:6px 12px;border-radius:8px;font-size:10px;border:0.5px solid var(--border);background:var(--card);color:var(--muted);cursor:pointer;font-family:monospace;transition:all .15s;text-align:left}
+.sb-btn:hover,.sb-btn.active{border-color:var(--green);color:var(--green);background:#0a1a0f}
+.state-toggle{display:flex;flex-direction:column;gap:4px;margin-top:8px}
+.st-btn{padding:5px 10px;border-radius:6px;font-size:9px;border:0.5px solid var(--border);background:none;color:var(--muted);cursor:pointer;font-family:monospace;transition:all .15s}
+.st-btn.active{border-color:var(--red);color:var(--red);background:#1a0808}
+.st-btn.ok.active{border-color:var(--green);color:var(--green);background:#0a1a0f}
+
+.phone{width:300px;height:620px;background:var(--bg);border-radius:36px;border:2px solid var(--border);overflow:hidden;position:relative;flex-shrink:0}
+.screen{display:none;width:100%;height:100%;flex-direction:column}
+.screen.active{display:flex}
+.sbar{display:flex;justify-content:space-between;padding:10px 20px 4px;font-size:10px;color:var(--muted);font-family:monospace;flex-shrink:0}
+
+.bnav{display:flex;align-items:center;justify-content:space-around;background:var(--surf);border-top:0.5px solid var(--border);padding:8px 0 10px;flex-shrink:0}
+.nb{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:4px 10px;border-radius:10px;background:none;border:none;transition:background .15s}
+.nb:hover{background:var(--border)}
+.nb-i{font-size:15px}
+.nb-l{font-size:8px;color:var(--muted);font-family:monospace}
+.nb.active .nb-l{color:var(--green)}
+.plus-btn{width:48px;height:48px;border-radius:50%;background:var(--green);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:22px;color:#000;font-weight:500;margin-top:-8px;flex-shrink:0;transition:background .15s}
+.plus-btn:hover{background:var(--greenl)}
+
+.scroll{flex:1;overflow-y:auto;padding:0 14px 8px}
+.scroll::-webkit-scrollbar{width:2px}
+.scroll::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+
+.pg-title{font-size:13px;font-weight:500;color:var(--text);font-family:Georgia,serif;padding:6px 14px 2px;flex-shrink:0}
+.pg-date{font-size:9px;color:var(--muted);font-family:monospace;padding:0 14px 4px;flex-shrink:0}
+.sec-title{font-size:9px;color:var(--muted);font-family:monospace;letter-spacing:.08em;text-transform:uppercase;margin:8px 0 4px}
+
+.cat-card{background:var(--card);border-radius:12px;border:0.5px solid var(--border);padding:9px 11px;margin-bottom:7px;cursor:pointer;transition:border-color .15s}
+.cat-card:hover{border-color:var(--green)}
+.cat-card.over{border:1.5px solid var(--red);background:#1a0d0d}
+.cat-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px}
+.cat-name{font-size:10px;font-weight:500;color:var(--text);font-family:monospace;letter-spacing:.05em}
+.cat-amt{font-size:12px;font-weight:500;color:var(--green);font-family:Georgia,serif}
+.cat-amt.over{color:var(--red)}
+.cat-item{display:flex;justify-content:space-between;font-size:9px;color:var(--muted);padding:2px 0;font-family:monospace}
+.cat-item span:last-child{color:var(--text)}
+.badge{font-size:7px;padding:2px 5px;border-radius:3px;font-family:monospace}
+.b-core{background:#1a2e1a;color:var(--green)}
+.b-custom{background:#2a2415;color:var(--amber)}
+.b-misc{background:#2a1515;color:var(--red)}
+.warn-tag{display:flex;align-items:center;gap:3px;font-size:8px;color:var(--red);font-family:monospace;margin-top:4px;padding:3px 6px;background:#2a0d0d;border-radius:4px;width:fit-content}
+
+.view-tog{display:flex;background:var(--card);border-radius:7px;padding:2px;margin:0 14px 6px;border:0.5px solid var(--border);flex-shrink:0}
+.vt-btn{flex:1;padding:3px;font-size:8px;border-radius:5px;border:none;cursor:pointer;background:none;color:var(--muted);font-family:monospace;transition:all .15s}
+.vt-btn.active{background:var(--green);color:#000}
+
+.splash-bg{background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:14px}
+.raccoon-circle{width:130px;height:130px;border-radius:65px;border:3px solid var(--green);overflow:hidden;flex-shrink:0}
+.raccoon-circle img{width:100%;height:100%;object-fit:cover}
+.splash-title{font-size:28px;color:var(--green);font-family:Georgia,serif;font-weight:700}
+
+.srow{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:0.5px solid var(--border)}
+.slabel{font-size:10px;color:var(--text);font-family:monospace}
+.sval{font-size:10px;color:var(--green);font-family:Georgia,serif;font-weight:500}
+.tog{width:30px;height:16px;background:var(--green);border-radius:8px;position:relative;cursor:pointer;flex-shrink:0}
+.tog::after{content:'';position:absolute;width:12px;height:12px;background:#fff;border-radius:50%;top:2px;right:2px;transition:all .15s}
+.tog.off{background:var(--border)}
+.tog.off::after{left:2px;right:auto}
+
+.add-overlay{position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.65);display:flex;flex-direction:column;justify-content:flex-end;z-index:10}
+.add-sheet{background:var(--surf);border-radius:20px 20px 0 0;border-top:0.5px solid var(--border);padding:14px}
+.sheet-title{font-size:12px;font-weight:500;color:var(--text);font-family:Georgia,serif;margin-bottom:10px}
+.cat-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:10px}
+.cat-opt{padding:9px;border-radius:9px;border:0.5px solid var(--border);background:var(--card);color:var(--text);font-size:9px;cursor:pointer;font-family:monospace;display:flex;flex-direction:column;gap:3px;align-items:flex-start;transition:border-color .15s}
+.cat-opt:hover{border-color:var(--green)}
+.cat-icon{font-size:17px}
+.misc-row{background:var(--card);border-radius:7px;padding:7px 9px;margin-bottom:7px;border:0.5px solid var(--border)}
+.sheet-cancel{width:100%;padding:9px;border-radius:9px;background:none;border:0.5px solid var(--border);color:var(--muted);font-size:10px;font-family:monospace;cursor:pointer}
+
+.emoji-row{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0;padding:6px;background:var(--card);border-radius:7px;border:0.5px solid var(--border)}
+.emoji-pick{font-size:16px;cursor:pointer;padding:3px;border-radius:4px;transition:background .1s;border:none;background:none}
+.emoji-pick:hover,.emoji-pick.sel{background:var(--border)}
+.input-row{display:flex;gap:6px;margin-bottom:6px}
+.fake-input{flex:1;background:var(--card);border:0.5px solid var(--border);border-radius:7px;padding:7px 9px;font-size:10px;color:var(--muted);font-family:monospace}
+.fake-input span{color:var(--red);font-size:8px;margin-left:3px}
+
+.insights-item{background:var(--card);border-radius:10px;border:0.5px solid var(--border);padding:9px 11px;margin-bottom:7px}
+.ins-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.ins-title{font-size:10px;color:var(--muted);font-family:monospace;letter-spacing:.05em;text-transform:uppercase}
+.ins-val{font-size:12px;font-weight:500;font-family:Georgia,serif}
+.bar-track{height:6px;background:var(--border);border-radius:3px;overflow:hidden;margin:3px 0}
+.bar-fill{height:100%;border-radius:3px;transition:width .3s}
+.heatrow{display:flex;gap:3px;flex-wrap:wrap}
+.heatday{width:16px;height:16px;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:6px;color:transparent;font-family:monospace}
+.streak-num{font-size:28px;font-weight:500;color:var(--green);font-family:Georgia,serif;text-align:center;padding:4px 0}
+
+.day-tabs{display:flex;gap:5px;padding:0 14px 6px;flex-shrink:0}
+.dtab{flex:1;padding:4px 0;border-radius:7px;font-size:9px;border:0.5px solid var(--border);background:none;color:var(--muted);cursor:pointer;font-family:monospace;transition:all .15s}
+.dtab.cur{background:var(--green);color:#000;border-color:var(--green)}
+</style>
+
+<div class="wrap" id="root">
+  <div class="sidebar">
+    <div class="sb-label">screens</div>
+    <button class="sb-btn active" onclick="go('splash')">splash</button>
+    <button class="sb-btn" onclick="go('home')">dashboard</button>
+    <button class="sb-btn" onclick="go('detail')">day detail</button>
+    <button class="sb-btn" onclick="go('add')">+ expense</button>
+    <button class="sb-btn" onclick="go('settings')">settings</button>
+    <button class="sb-btn" onclick="go('insights')">insights</button>
+    <div class="state-toggle">
+      <div class="sb-label" style="margin-top:8px">dashboard state</div>
+      <button class="st-btn ok active" id="st-ok" onclick="setState('ok')">under limit</button>
+      <button class="st-btn" id="st-over" onclick="setState('over')">over daily limit</button>
+    </div>
+  </div>
+
+  <div class="phone" id="phone">
+
+    <div id="s-splash" class="screen active">
+      <div class="splash-bg">
+        <div class="raccoon-circle">
+          <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAMCAgMCAgMDAgMDAwMDBAcFBAQEBAkGBwUHCgkLCwoJCgoMDREODAwQDAoKDhQPEBESExMTCw4UFhQSFhESExL/2wBDAQMDAwQEBAgFBQgSDAoMEhISEhISEhISEhISEhISEhISEhISEhISEhISEhISEhISEhISEhISEhISEhISEhISEhL/wAARCADwAPADASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwA+Ir3/AKafLfAVJCb7nJFSfbf70VvR5bj0qa4k/wBbTImuM/N/EahjunH3mpzTbjUPnf7woAss8jVsWL7EqslrzUqSeVQBtpPuqVqjl2l2e5qNXLVGLiuZ1qjEi7/MqO4k21TkvKguZdtc0mMmi5kq7FJUURqXGVpAfU0f3qkSP5qTfTVagCtdxcbq5jUItm+vQXi3LXl2v2H2m4ojuB0dlH8tM1D/Vv8rU3Tz8q0mrH95WnQDyS8P7ys6KP97VzVD+8rOi+/8ALXRADdu49qbeRfc/4FT41/1tMuP9dQIajfNUcn3qtLH8tVpOaAGscLVdj8x+apX61AzsKAFkNV5Gz8tSSNVZ2+agCOP79aVn90VmRt/erRs+i0AbcbkLTJJMmq32jgVH5m5qAJpJMVDv3Gm7jQpywFADS3IFRPNsNWZItgJqlqUG6Lcp5FAFNpCzdartB+83GrCW58ralFvQBHEm1KjaEbqsvDsiNVIwW5oAbaW+6T8a0Utto9qp2jbV96ufagqGgBfItfMH/1qnW2hx2qiLrL/wCzUjXPGFoA0RHFsH86F8rZxWQb5/7tQPen0oAtanE6nzEB+WuamjmX5mHFdBBP81ZWrDaW20AZrN8tNX5WqUYp3l1oBlupHxUS/epz8VGPv0ANlqWKbytPkiZqlto8pgigC1bX3y8mt3Sp+lc6sO04rV0vf9KAOiuJCVLpXk2rMzXcpJPeu5mvP3bE15re/vbpqTWoHsulP8qVHenRFqyNJk4WtaOTcKtgXl+7RnnAqFDxUhbigBj81GwqVhkVC7YoAbNKqLXK6hcBmOKt6hcf8s1P+NZTxs55oAmijLLU8cAqWJNqCrCxkigCNY6cq8VKqdaeq0AVJo/WopIflNaLJzVadfuGgDOWHa1FxF/q2/u1Na/vfkWp5oeRQBymoKPMWsbWU3W6mt/VQdxNc/rZ3LQBi2y1bj2ZqrCP9ZV2OPzBQByevt89Y8Z2yBf71dJfQb425rkpX2yUAWJI/9KiX/b/ka7vRk/4loFca6fv4G7bq7TR5f8AiXIOlADbtN5qusBUcVrXEQxis3hXoA9H0N+FpuvP+8rP0Rtsq1s6t/ryaAMRTlqlUcVFjDVI3HFXABwNNkJp3ekJoAZtz8tSW0TK3NWLe13R0yW22UAPNx5ZqNrjfVGaTYa2dF0j7Qys3egDJupGaQhao3HyjiusvNPijhJA+auNvX3t8tAEtrJ97cK0I7j5etYkXEiitSF/loAt+f8AJiq0t1UkkvFVJX2igB1vcVr2t3vXFYKNzVuzHyUAXrqQbqxJmJZjUt1cVQmfdQBo2P8ArVrqIoNyVxumyfPXUW0pxQBPcwY6Vk3EMoB+tbl1JxxWNdTbVagDFZDmpbWFi1Onb5utW9Ptvk3GgDSstPdVBxW5a2WFqrZJhK2bOPbQBbKbaiZParMicVVkmVB0oAj81lb5aZ9oczUb9ozQBUuI/wB5TNuBT7n7/wCtNRTtoAd5vl07zlqF0O6g0ATST7uKrXcvy1Zm+aPoarXD/u6AI0lLPUlxiiq0H36AH2cO9NtX47bamaKqFq0m7atWo5cUAQLuqVQyiotpapFOFoAkb71VboGpVmqK6f5KAP/Z" alt="raccoon" style="width:100%;height:100%;object-fit:cover"/>
+        </div>
+        <div class="splash-title">Spend Gremlin</div>
+      </div>
+    </div>
+
+    <div id="s-home" class="screen">
+      <div class="sbar"><span>9:41</span><span>▮▮▮</span></div>
+      <div class="pg-title">Dashboard</div>
+      <div class="pg-date" id="hm-date">Wednesday, 1 Apr 2026</div>
+      <div style="display:flex;flex-direction:column;align-items:center;padding:4px 0 2px;flex-shrink:0">
+        <svg width="160" height="160" viewBox="0 0 160 160" id="ring-svg">
+          <circle cx="80" cy="80" r="66" fill="none" stroke="#1e2330" stroke-width="14"/>
+          <circle id="ring-ok" cx="80" cy="80" r="66" fill="none" stroke="#22c55e" stroke-width="14" stroke-dasharray="414.7" stroke-dashoffset="157.6" stroke-linecap="round" transform="rotate(-90 80 80)"/>
+          <circle id="ring-over" cx="80" cy="80" r="66" fill="none" stroke="#ef4444" stroke-width="14" stroke-dasharray="414.7" stroke-dashoffset="321.4" stroke-linecap="round" transform="rotate(-90 80 80)" opacity="0"/>
+          <text x="80" y="70" text-anchor="middle" fill="#f1f5f9" font-size="19" font-family="Georgia,serif" font-weight="500" id="ring-amt">₹1,240</text>
+          <text x="80" y="85" text-anchor="middle" fill="#94a3b8" font-size="8" font-family="monospace" id="ring-sub">of ₹2,000 daily limit</text>
+          <text x="80" y="99" text-anchor="middle" font-size="9" font-family="monospace" id="ring-pct" fill="#22c55e">62% used</text>
+        </svg>
+        <div style="font-size:9px;color:var(--muted);font-family:monospace" id="ring-label">tap ring to view breakdown</div>
+      </div>
+      <div class="view-tog">
+        <button class="vt-btn active" onclick="setView(this,'daily')">daily</button>
+        <button class="vt-btn" onclick="setView(this,'weekly')">weekly</button>
+        <button class="vt-btn" onclick="setView(this,'monthly')">monthly</button>
+      </div>
+      <div class="scroll">
+        <div class="sec-title">today's spend</div>
+        <div class="cat-card">
+          <div class="cat-head">
+            <div style="display:flex;gap:5px;align-items:center"><span class="cat-name">FOOD</span><span class="badge b-core">core</span></div>
+            <span class="cat-amt">₹480</span>
+          </div>
+          <div class="cat-item"><span>Breakfast · Idli</span><span>₹120</span></div>
+          <div class="cat-item"><span>Lunch · Thali</span><span>₹200</span></div>
+          <div class="cat-item"><span>Snacks</span><span>₹160</span></div>
+        </div>
+        <div class="cat-card">
+          <div class="cat-head">
+            <div style="display:flex;gap:5px;align-items:center"><span class="cat-name">TRAVEL</span><span class="badge b-core">core</span></div>
+            <span class="cat-amt">₹340</span>
+          </div>
+          <div class="cat-item"><span>Uber to office</span><span>₹220</span></div>
+          <div class="cat-item"><span>Metro</span><span>₹120</span></div>
+        </div>
+        <div class="cat-card">
+          <div class="cat-head">
+            <div style="display:flex;gap:5px;align-items:center"><span class="cat-name">☕ COFFEE</span><span class="badge b-custom">custom</span></div>
+            <span class="cat-amt">₹280</span>
+          </div>
+          <div class="cat-item"><span>Blue Tokai</span><span>₹280</span></div>
+        </div>
+        <div class="cat-card over" id="misc-card">
+          <div class="cat-head">
+            <div style="display:flex;gap:5px;align-items:center"><span class="cat-name">MISC</span><span class="badge b-misc">misc</span></div>
+            <span class="cat-amt over">₹240</span>
+          </div>
+          <div class="cat-item"><span>Painkiller strip</span><span>₹80</span></div>
+          <div class="cat-item"><span>Phone case</span><span>₹160</span></div>
+          <div class="warn-tag">⚠ misc over by ₹140 (limit ₹100)</div>
+        </div>
+        <div id="total-warn" style="display:none;background:#2a0d0d;border:1.5px solid var(--red);border-radius:10px;padding:9px 11px;margin-bottom:7px">
+          <div style="font-size:9px;color:var(--red);font-family:monospace;font-weight:500">⚠ DAILY LIMIT EXCEEDED</div>
+          <div style="font-size:9px;color:var(--muted);font-family:monospace;margin-top:3px">over by ₹450 — ₹2,450 spent of ₹2,000</div>
+        </div>
+      </div>
+      <div class="bnav">
+        <button class="nb active" onclick="go('home')"><span class="nb-i">⊞</span><span class="nb-l" style="color:var(--green)">home</span></button>
+        <button class="nb" onclick="go('detail')"><span class="nb-i">≡</span><span class="nb-l">history</span></button>
+        <button class="plus-btn" onclick="go('add')">+</button>
+        <button class="nb" onclick="go('insights')"><span class="nb-i">◈</span><span class="nb-l">insights</span></button>
+        <button class="nb" onclick="go('settings')"><span class="nb-i">⚙</span><span class="nb-l">settings</span></button>
+      </div>
+    </div>
+
+    <div id="s-detail" class="screen">
+      <div class="sbar"><span>9:41</span><span>▮▮▮</span></div>
+      <div style="display:flex;align-items:center;gap:6px;padding:5px 14px 2px;flex-shrink:0">
+        <button style="background:none;border:none;color:var(--muted);font-size:15px;cursor:pointer" onclick="go('home')">←</button>
+        <span class="pg-title" style="padding:0;font-size:12px">Apr 1 — ₹1,240</span>
+        <span style="margin-left:auto;font-size:9px;color:var(--muted);font-family:monospace">62% of limit</span>
+      </div>
+      <div class="day-tabs">
+        <button class="dtab" style="font-size:8px">Mon 30</button>
+        <button class="dtab" style="font-size:8px">Tue 31</button>
+        <button class="dtab cur" style="font-size:8px">Wed 1</button>
+        <button class="dtab" style="font-size:8px">Thu 2</button>
+      </div>
+      <div class="scroll">
+        <div class="sec-title">food — tap to add/edit</div>
+        <div class="cat-card">
+          <div class="cat-head">
+            <span class="cat-name">FOOD</span>
+            <div style="display:flex;gap:6px;align-items:center"><span class="cat-amt">₹480</span><span style="color:var(--green);font-size:16px;cursor:pointer">+</span></div>
+          </div>
+          <div class="cat-item" style="padding:3px 0;cursor:pointer">
+            <span>Breakfast · Idli</span>
+            <div style="display:flex;gap:6px;align-items:center"><span>₹120</span><span style="font-size:7px;color:var(--muted);border:0.5px solid var(--border);padding:1px 3px;border-radius:3px">excl</span></div>
+          </div>
+          <div class="cat-item" style="padding:3px 0;cursor:pointer"><span>Lunch · Thali</span><span>₹200</span></div>
+          <div class="cat-item" style="padding:3px 0;cursor:pointer"><span>Snacks</span><span>₹160</span></div>
+        </div>
+        <div class="sec-title">travel — tap to add/edit</div>
+        <div class="cat-card">
+          <div class="cat-head">
+            <span class="cat-name">TRAVEL</span>
+            <div style="display:flex;gap:6px;align-items:center"><span class="cat-amt">₹340</span><span style="color:var(--green);font-size:16px;cursor:pointer">+</span></div>
+          </div>
+          <div class="cat-item" style="cursor:pointer"><span>Uber to office</span><span>₹220</span></div>
+          <div class="cat-item" style="cursor:pointer"><span>Metro</span><span>₹120</span></div>
+        </div>
+        <div class="sec-title">custom + misc — via + button</div>
+        <div style="background:var(--card);border:0.5px dashed var(--border);border-radius:9px;padding:9px;text-align:center;font-size:9px;color:var(--muted);font-family:monospace">
+          ☕ coffee ₹280 · misc ₹240<br><span style="color:var(--red);font-size:8px">misc over limit</span> · <span style="color:var(--green)">use + to manage</span>
+        </div>
+      </div>
+      <div class="bnav">
+        <button class="nb" onclick="go('home')"><span class="nb-i">⊞</span><span class="nb-l">home</span></button>
+        <button class="nb active"><span class="nb-i">≡</span><span class="nb-l" style="color:var(--green)">history</span></button>
+        <button class="plus-btn" onclick="go('add')">+</button>
+        <button class="nb" onclick="go('insights')"><span class="nb-i">◈</span><span class="nb-l">insights</span></button>
+        <button class="nb" onclick="go('settings')"><span class="nb-i">⚙</span><span class="nb-l">settings</span></button>
+      </div>
+    </div>
+
+    <div id="s-add" class="screen" style="position:relative">
+      <div class="sbar"><span>9:41</span><span>▮▮▮</span></div>
+      <div class="pg-title">Dashboard</div>
+      <div style="flex:1;background:rgba(0,0,0,.5)"></div>
+      <div class="add-overlay">
+        <div class="add-sheet" id="add-main">
+          <div class="sheet-title">add expense</div>
+          <div class="cat-grid">
+            <button class="cat-opt" onclick="showAddForm('food')"><span class="cat-icon">🍛</span><span>food</span><span class="badge b-core">core</span></button>
+            <button class="cat-opt" onclick="showAddForm('travel')"><span class="cat-icon">🚌</span><span>travel</span><span class="badge b-core">core</span></button>
+            <button class="cat-opt" onclick="showAddForm('coffee')"><span class="cat-icon">☕</span><span>coffee</span><span class="badge b-custom">custom</span></button>
+            <button class="cat-opt" onclick="showNewCat()"><span class="cat-icon" style="font-size:14px;color:var(--amber)">+</span><span>new category</span></button>
+          </div>
+          <div class="misc-row" onclick="showAddForm('misc')">
+            <div style="font-size:8px;color:var(--muted);font-family:monospace;margin-bottom:2px">MISC · ₹240 / ₹100 limit</div>
+            <div style="font-size:9px;color:var(--red);font-family:monospace">⚠ over limit — tap to log misc item</div>
+          </div>
+          <button class="sheet-cancel" onclick="go('home')">cancel</button>
+        </div>
+        <div class="add-sheet" id="add-form" style="display:none">
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:10px">
+            <button style="background:none;border:none;color:var(--muted);font-size:14px;cursor:pointer" onclick="showMain()">←</button>
+            <div class="sheet-title" style="margin:0" id="form-title">food</div>
+          </div>
+          <div class="input-row">
+            <div class="fake-input" style="flex:0.5;border-color:var(--green);color:var(--text)">₹ amount<span>*</span></div>
+            <div class="fake-input">name (optional)</div>
+          </div>
+          <div style="display:flex;gap:6px;margin-bottom:8px">
+            <div style="font-size:9px;color:var(--muted);font-family:monospace;padding-top:4px">include in daily total</div>
+            <div class="tog" style="margin-left:auto"></div>
+          </div>
+          <button style="width:100%;padding:9px;border-radius:9px;background:var(--green);border:none;color:#000;font-size:10px;font-family:monospace;font-weight:500;cursor:pointer">save</button>
+        </div>
+        <div class="add-sheet" id="add-newcat" style="display:none">
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px">
+            <button style="background:none;border:none;color:var(--muted);font-size:14px;cursor:pointer" onclick="showMain()">←</button>
+            <div class="sheet-title" style="margin:0">new category</div>
+          </div>
+          <div style="font-size:9px;color:var(--muted);font-family:monospace;margin-bottom:4px">pick emoji (optional, defaults to 🦝)</div>
+          <div class="emoji-row">
+            <button class="emoji-pick sel">🦝</button>
+            <button class="emoji-pick">💊</button><button class="emoji-pick">🎮</button>
+            <button class="emoji-pick">🛒</button><button class="emoji-pick">👗</button>
+            <button class="emoji-pick">🎵</button><button class="emoji-pick">🍺</button>
+            <button class="emoji-pick">💪</button><button class="emoji-pick">📚</button>
+          </div>
+          <div class="input-row">
+            <div class="fake-input" style="border-color:var(--green);color:var(--text)">category name<span>*</span></div>
+          </div>
+          <div style="font-size:9px;color:var(--muted);font-family:monospace;margin-bottom:6px">first expense will be prompted after</div>
+          <button style="width:100%;padding:9px;border-radius:9px;background:var(--green);border:none;color:#000;font-size:10px;font-family:monospace;font-weight:500;cursor:pointer">create category</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="s-settings" class="screen">
+      <div class="sbar"><span>9:41</span><span>▮▮▮</span></div>
+      <div class="pg-title">Settings</div>
+      <div class="scroll" style="padding-top:4px">
+        <div class="sec-title">spend limits</div>
+        <div class="srow"><span class="slabel">daily limit</span><span class="sval">₹2,000</span></div>
+        <div class="srow"><span class="slabel">weekly limit</span><span class="sval">₹12,000</span></div>
+        <div class="srow"><span class="slabel">monthly limit</span><span class="sval">₹45,000</span></div>
+        <div class="srow" style="border-color:var(--red)">
+          <span class="slabel" style="color:var(--redl)">misc category limit</span>
+          <span class="sval" style="color:var(--red)">₹100</span>
+        </div>
+        <div style="font-size:8px;color:var(--muted);font-family:monospace;padding:4px 0 8px">misc limit triggers warning + red card</div>
+        <div class="sec-title">include in daily total</div>
+        <div class="srow"><span class="slabel">food</span><div class="tog"></div></div>
+        <div class="srow"><span class="slabel">travel</span><div class="tog"></div></div>
+        <div class="srow"><span class="slabel">misc</span><div class="tog off"></div></div>
+        <div class="srow"><span class="slabel">custom categories</span><div class="tog"></div></div>
+        <div class="sec-title">custom categories</div>
+        <div class="srow"><span class="slabel">☕ coffee</span><span style="font-size:9px;color:var(--red);font-family:monospace;cursor:pointer">remove</span></div>
+        <div style="margin-top:6px;padding:7px 9px;background:var(--card);border-radius:7px;border:0.5px dashed var(--border);text-align:center;font-size:9px;color:var(--green);font-family:monospace;cursor:pointer">+ add category</div>
+        <div class="sec-title" style="margin-top:10px">display</div>
+        <div class="srow"><span class="slabel">currency</span><span class="sval">₹ INR</span></div>
+        <div class="srow"><span class="slabel">week starts</span><span class="sval">Monday</span></div>
+      </div>
+      <div class="bnav">
+        <button class="nb" onclick="go('home')"><span class="nb-i">⊞</span><span class="nb-l">home</span></button>
+        <button class="nb" onclick="go('detail')"><span class="nb-i">≡</span><span class="nb-l">history</span></button>
+        <button class="plus-btn" onclick="go('add')">+</button>
+        <button class="nb" onclick="go('insights')"><span class="nb-i">◈</span><span class="nb-l">insights</span></button>
+        <button class="nb active"><span class="nb-i">⚙</span><span class="nb-l" style="color:var(--green)">settings</span></button>
+      </div>
+    </div>
+
+    <div id="s-insights" class="screen">
+      <div class="sbar"><span>9:41</span><span>▮▮▮</span></div>
+      <div class="pg-title">Insights</div>
+      <div class="pg-date">April 2026</div>
+      <div class="scroll">
+        <div class="sec-title">streak</div>
+        <div class="insights-item">
+          <div class="ins-head"><span class="ins-title">days under limit</span><span class="ins-val" style="color:var(--green)">7 days 🔥</span></div>
+          <div style="font-size:9px;color:var(--muted);font-family:monospace">best: 12 days · this month: 18/31</div>
+        </div>
+        <div class="sec-title">daily spend — last 7 days</div>
+        <div class="insights-item">
+          <div style="display:flex;gap:3px;align-items:flex-end;height:48px;padding:2px 0">
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px">
+              <div style="width:100%;background:var(--green);border-radius:2px;height:22px"></div>
+              <div style="font-size:7px;color:var(--muted);font-family:monospace">M</div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px">
+              <div style="width:100%;background:var(--red);border-radius:2px;height:38px"></div>
+              <div style="font-size:7px;color:var(--muted);font-family:monospace">T</div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px">
+              <div style="width:100%;background:var(--green);border-radius:2px;height:28px"></div>
+              <div style="font-size:7px;color:var(--muted);font-family:monospace">W</div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px">
+              <div style="width:100%;background:var(--green);border-radius:2px;height:18px"></div>
+              <div style="font-size:7px;color:var(--muted);font-family:monospace">T</div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px">
+              <div style="width:100%;background:var(--green);border-radius:2px;height:32px"></div>
+              <div style="font-size:7px;color:var(--muted);font-family:monospace">F</div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px">
+              <div style="width:100%;background:var(--amber);border-radius:2px;height:36px"></div>
+              <div style="font-size:7px;color:var(--muted);font-family:monospace">S</div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px">
+              <div style="width:100%;background:var(--green);border-radius:2px;height:24px"></div>
+              <div style="font-size:7px;color:var(--muted);font-family:monospace">S</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:4px;font-size:8px;font-family:monospace">
+            <span style="color:var(--green)">■ under</span>
+            <span style="color:var(--amber)">■ near</span>
+            <span style="color:var(--red)">■ over</span>
+          </div>
+        </div>
+        <div class="sec-title">category split this month</div>
+        <div class="insights-item">
+          <div style="display:flex;flex-direction:column;gap:5px">
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:9px;font-family:monospace;margin-bottom:2px"><span style="color:var(--text)">🍛 food</span><span style="color:var(--muted)">41%</span></div>
+              <div class="bar-track"><div class="bar-fill" style="width:41%;background:var(--green)"></div></div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:9px;font-family:monospace;margin-bottom:2px"><span style="color:var(--text)">🚌 travel</span><span style="color:var(--muted)">28%</span></div>
+              <div class="bar-track"><div class="bar-fill" style="width:28%;background:var(--amber)"></div></div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:9px;font-family:monospace;margin-bottom:2px"><span style="color:var(--text)">☕ coffee</span><span style="color:var(--muted)">22%</span></div>
+              <div class="bar-track"><div class="bar-fill" style="width:22%;background:#7c3aed"></div></div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:9px;font-family:monospace;margin-bottom:2px"><span style="color:var(--red)">misc</span><span style="color:var(--red)">9%</span></div>
+              <div class="bar-track"><div class="bar-fill" style="width:9%;background:var(--red)"></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="sec-title">monthly forecast</div>
+        <div class="insights-item">
+          <div class="ins-head"><span class="ins-title">projected spend</span><span class="ins-val" style="color:var(--amber)">₹38,400</span></div>
+          <div class="bar-track"><div class="bar-fill" style="width:85%;background:var(--amber)"></div></div>
+          <div style="font-size:8px;color:var(--muted);font-family:monospace;margin-top:4px">85% of monthly limit · 9 days remain</div>
+        </div>
+        <div class="sec-title">misc creep</div>
+        <div class="insights-item">
+          <div class="ins-head"><span class="ins-title">misc this month</span><span class="ins-val" style="color:var(--red)">₹2,840</span></div>
+          <div style="font-size:8px;color:var(--red);font-family:monospace">over limit on 14 of 22 days</div>
+        </div>
+      </div>
+      <div class="bnav">
+        <button class="nb" onclick="go('home')"><span class="nb-i">⊞</span><span class="nb-l">home</span></button>
+        <button class="nb" onclick="go('detail')"><span class="nb-i">≡</span><span class="nb-l">history</span></button>
+        <button class="plus-btn" onclick="go('add')">+</button>
+        <button class="nb active"><span class="nb-i">◈</span><span class="nb-l" style="color:var(--green)">insights</span></button>
+        <button class="nb" onclick="go('settings')"><span class="nb-i">⚙</span><span class="nb-l">settings</span></button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const screens=['splash','home','detail','add','settings','insights'];
+const sidebtns=document.querySelectorAll('.sb-btn');
+function go(name){
+  screens.forEach(s=>{
+    const el=document.getElementById('s-'+s);
+    if(el) el.classList.toggle('active',s===name);
+  });
+  sidebtns.forEach((b,i)=>{
+    b.classList.toggle('active',screens[i]===name);
+  });
+  if(name==='add'){document.getElementById('add-main').style.display='';document.getElementById('add-form').style.display='none';document.getElementById('add-newcat').style.display='none';}
+}
+function setView(btn,v){
+  btn.closest('.view-tog').querySelectorAll('.vt-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+function setState(s){
+  document.getElementById('st-ok').classList.toggle('active',s==='ok');
+  document.getElementById('st-over').classList.toggle('active',s==='over');
+  const ringOk=document.getElementById('ring-ok');
+  const ringOver=document.getElementById('ring-over');
+  const ringAmt=document.getElementById('ring-amt');
+  const ringSub=document.getElementById('ring-sub');
+  const ringPct=document.getElementById('ring-pct');
+  const totalWarn=document.getElementById('total-warn');
+  if(s==='over'){
+    ringOk.setAttribute('stroke-dashoffset','0');
+    ringOver.setAttribute('opacity','1');
+    ringOver.setAttribute('stroke-dashoffset','321.4');
+    ringAmt.textContent='₹2,450';
+    ringAmt.setAttribute('fill','#ef4444');
+    ringSub.textContent='of ₹2,000 — over!';
+    ringPct.textContent='⚠ 122% used';
+    ringPct.setAttribute('fill','#ef4444');
+    totalWarn.style.display='';
+  } else {
+    ringOk.setAttribute('stroke-dashoffset','157.6');
+    ringOver.setAttribute('opacity','0');
+    ringAmt.textContent='₹1,240';
+    ringAmt.setAttribute('fill','#f1f5f9');
+    ringSub.textContent='of ₹2,000 daily limit';
+    ringPct.textContent='62% used';
+    ringPct.setAttribute('fill','#22c55e');
+    totalWarn.style.display='none';
+  }
+}
+function showAddForm(cat){
+  document.getElementById('add-main').style.display='none';
+  document.getElementById('add-form').style.display='';
+  document.getElementById('add-newcat').style.display='none';
+  const icons={food:'🍛',travel:'🚌',coffee:'☕',misc:'📦'};
+  document.getElementById('form-title').textContent=(icons[cat]||'')+ ' '+cat;
+}
+function showNewCat(){
+  document.getElementById('add-main').style.display='none';
+  document.getElementById('add-form').style.display='none';
+  document.getElementById('add-newcat').style.display='';
+}
+function showMain(){
+  document.getElementById('add-main').style.display='';
+  document.getElementById('add-form').style.display='none';
+  document.getElementById('add-newcat').style.display='none';
+}
+document.querySelectorAll('.emoji-pick').forEach(b=>{
+  b.addEventListener('click',function(){
+    b.closest('.emoji-row').querySelectorAll('.emoji-pick').forEach(x=>x.classList.remove('sel'));
+    b.classList.add('sel');
+  });
+});
+</script>

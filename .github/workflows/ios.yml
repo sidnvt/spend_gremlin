@@ -1,0 +1,43 @@
+name: Build iOS IPA
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build_ios:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.x' # Or the version matching your local install
+          channel: 'stable'
+
+      - name: Install Dependencies
+        run: flutter pub get
+
+      - name: Build iOS Application (No Sign)
+        # Note: True App Store or device deployment requires Apple Developer certificates.
+        # This standard build command will output an un-signed `.app` runner directory.
+        run: flutter build ios --release --no-codesign
+
+      # To test on an actual physical 18+ iOS device without a developer account, you need the actual .ipa which is trickier without codesign. 
+      # Instead, we will construct a payload so you can sideload it if desired.
+      - name: Create IPA Payload
+        run: |
+          mkdir Payload
+          cp -r build/ios/iphoneos/Runner.app Payload/
+          zip -r spend_gremlin_ios.ipa Payload
+          
+      - name: Upload iOS Upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: Spend Gremlin iOS Build
+          path: spend_gremlin_ios.ipa
